@@ -36,7 +36,7 @@ parts:
       snapcraftctl set-version "$(git describe --tags | sed 's/v//' | sed "s/-g/%/"  | cut -d "%" -f1)"
     override-build: |
       git checkout "$(git describe --tags `git rev-list --tags --max-count=1`)" -b latest
-      mvn clean install -Pproduct
+      mvn clean verify -f /releng
     build-packages:
       - git
       - sed
