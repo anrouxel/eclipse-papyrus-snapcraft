@@ -33,12 +33,9 @@ parts:
     source-type: git
     override-pull: |
       snapcraftctl pull
-      git checkout "$(git describe --tags `git rev-list --tags --max-count=1`)" -b latest
       snapcraftctl set-version "$(git describe --tags | sed 's/v//' | sed "s/-g/%/"  | cut -d "%" -f1)"
     override-build: |
-      mvn package
-      tree $SNAPCRAFT_PART_INSTALL/
-      tree $SNAPCRAFT_PART_BUILD/
+      git checkout "$(git describe --tags `git rev-list --tags --max-count=1`)" -b latest
     build-packages:
       - git
       - sed
