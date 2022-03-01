@@ -33,10 +33,12 @@ parts:
     source-type: git
     override-pull: |
       snapcraftctl pull
-      snapcraftctl set-version "$(git describe --tags | sed 's/v//' | sed "s/-g/%/"  | cut -d "%" -f1)"
+      snapcraftctl set-version "5.2.0"
     override-build: |
       git checkout 5.2.0 -b latest
       mvn package
+      tree $SNAPCRAFT_PART_INSTALL/
+      tree $SNAPCRAFT_PART_BUILD/
     build-packages:
       - git
       - sed
