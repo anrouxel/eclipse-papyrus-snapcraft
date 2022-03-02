@@ -3,7 +3,7 @@ license: GPL-3.0
 summary: Logisim is a digital circuit simulator
 description: |
   Github (compilation) : https://github.com/anrouxel/logisim-evolution-snapcraft
-base: core20
+base: core18
 grade: stable
 confinement: strict
 
@@ -14,7 +14,7 @@ architectures:
 
 apps:
   eclipse-papyrus-snapcraft:
-    extensions: [gnome-3-38]
+    extensions: [gnome-3-28]
     command: bin/java -jar $SNAP/jar/Logisim-jar-with-dependencies.jar
     plugs:
       - gsettings
@@ -28,22 +28,21 @@ apps:
 
 parts:
   eclipse-papyrus-snapcraft:
-    plugin: nil
+    plugin: maven
     source: https://git.eclipse.org/r/papyrus/org.eclipse.papyrus.git
     source-type: git
     override-pull: |
       snapcraftctl pull
-      snapcraftctl set-version "5.2.0"
-    override-build: |
       git checkout 5.2.0 -b latest
-      mvn package
-      tree $SNAPCRAFT_PART_INSTALL/
-      tree $SNAPCRAFT_PART_BUILD/
+      snapcraftctl set-version "$(git describe --tags | sed 's/v//' | sed "s/-g/%/"  | cut -d "%" -f1)"
     build-packages:
       - git
       - sed
-      - maven
       - tree
-      - default-jdk
+      - openjdk-11-jdk
     stage-packages:
-      - default-jre
+      - openjdk-11-jre
+
+package-repositories:
+ - type: apt
+   ppa: openjdk-r/ppa
