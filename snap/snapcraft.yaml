@@ -37,8 +37,9 @@ parts:
     override-build: |
       git checkout 5.2.0 -b latest
       mvn package
-      tree $SNAPCRAFT_PART_INSTALL/
-      tree $SNAPCRAFT_PART_BUILD/
+      ls bin/
+      cd bin/
+      ls
     build-packages:
       - git
       - sed
