@@ -31,6 +31,7 @@ parts:
     plugin: maven
     source: https://git.eclipse.org/r/papyrus/org.eclipse.papyrus.git
     source-type: git
+    maven-openjdk-version: "11"
     override-pull: |
       snapcraftctl pull
       git checkout 5.2.0 -b latest
@@ -39,10 +40,3 @@ parts:
       - git
       - sed
       - tree
-      - openjdk-11-jdk
-    stage-packages:
-      - openjdk-11-jre
-
-package-repositories:
- - type: apt
-   ppa: openjdk-r/ppa
