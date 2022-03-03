@@ -29,6 +29,8 @@ apps:
 parts:
   eclipse-papyrus-snapcraft:
     plugin: maven
+    maven-options:
+      [-DskipTests=true, --show-version, --errors]
     source: https://git.eclipse.org/r/papyrus/org.eclipse.papyrus.git
     source-type: git
     override-pull: |
@@ -40,5 +42,6 @@ parts:
       - sed
       - tree
       - openjdk-11-jdk
+      - maven
     stage-packages:
       - openjdk-11-jre
