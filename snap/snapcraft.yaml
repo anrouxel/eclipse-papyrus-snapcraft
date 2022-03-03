@@ -40,3 +40,5 @@ parts:
       - git
       - sed
       - tree
+    stage-packages:
+      - openjdk-11-jre
