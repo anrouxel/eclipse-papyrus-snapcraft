@@ -37,6 +37,8 @@ parts:
       snapcraftctl set-version "$(git describe --tags | sed 's/v//' | sed "s/-g/%/"  | cut -d "%" -f1)"
     override-build: |
       mvn -f releng/rcp/pom.xml -Dpapyrus.repo.main=https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2021-09/5.2.0/main/ -Dmaven.repo.local=$SNAPCRAFT_PART_INSTALL/Papyrus-Master-RCP-Releases/.repository clean verify
+      tree $SNAPCRAFT_PART_INSTALL/
+      tree $SNAPCRAFT_PART_BUILD/
     build-packages:
       - git
       - sed
