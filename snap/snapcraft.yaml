@@ -37,10 +37,7 @@ parts:
       git checkout 5.2.0 -b latest
       snapcraftctl set-version "$(git describe --tags | sed 's/v//' | sed "s/-g/%/"  | cut -d "%" -f1)"
     override-build: |
-      mvn package -DskipTests
-      mkdir -p "$SNAPCRAFT_PART_INSTALL/etc/whereami/lib"
-      cp target/*.jar "$SNAPCRAFT_PART_INSTALL/etc/whereami/lib"
-      cp lib/* "$SNAPCRAFT_PART_INSTALL/etc/whereami/lib"
+      mvn package
     build-packages:
       - git
       - sed
