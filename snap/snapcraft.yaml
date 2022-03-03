@@ -3,7 +3,7 @@ license: GPL-3.0
 summary: Logisim is a digital circuit simulator
 description: |
   Github (compilation) : https://github.com/anrouxel/logisim-evolution-snapcraft
-base: core18
+base: core20
 grade: stable
 confinement: strict
 
@@ -14,7 +14,7 @@ architectures:
 
 apps:
   eclipse-papyrus-snapcraft:
-    extensions: [gnome-3-28]
+    extensions: [gnome-3-38]
     command: bin/java -jar $SNAP/jar/Logisim-jar-with-dependencies.jar
     plugs:
       - gsettings
