@@ -29,16 +29,22 @@ apps:
 parts:
   eclipse-papyrus-snapcraft:
     plugin: maven
+    maven-openjdk-version: "11"
     source: https://git.eclipse.org/r/papyrus/org.eclipse.papyrus.git
     source-type: git
-    maven-openjdk-version: "11"
     override-pull: |
       snapcraftctl pull
       git checkout 5.2.0 -b latest
       snapcraftctl set-version "$(git describe --tags | sed 's/v//' | sed "s/-g/%/"  | cut -d "%" -f1)"
+    override-build: |
+      mvn package -DskipTests
+      mkdir -p "$SNAPCRAFT_PART_INSTALL/etc/whereami/lib"
+      cp target/*.jar "$SNAPCRAFT_PART_INSTALL/etc/whereami/lib"
+      cp lib/* "$SNAPCRAFT_PART_INSTALL/etc/whereami/lib"
     build-packages:
       - git
       - sed
       - tree
+      - openjdk-11-jdk
     stage-packages:
       - openjdk-11-jre
