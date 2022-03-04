@@ -42,13 +42,12 @@ parts:
           port=$(echo "$1" | sed -E 's|https?://[^:/]*:?([0-9]*)/?|\1|')
       }
       
-      set --
       if [ -n "${http_proxy:-}" ]; then
           getproxy "$http_proxy"
-          set -- "$@" "-Dhttp.proxyHost=$host" "-Dhttp.proxyPort=$port"
+          set MAVEN_OPTS= -Dhttp.proxyHost=$host -Dhttp.proxyPort=$port
       fi
       
-      mvn "$@" -f releng/rcp/pom.xml -Dpapyrus.repo.main=https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2021-09/5.2.0/main/ clean verify
+      mvn -f releng/rcp/pom.xml -Dpapyrus.repo.main=https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2021-09/5.2.0/main/ clean verify
       tar -xf "${SNAPCRAFT_PART_BUILD}/releng/rcp/org.eclipse.papyrus.rcp.product/target/products/org.eclipse.papyrus.rcp.product-linux.gtk.x86_64.tar.gz" -C "${SNAPCRAFT_PART_INSTALL}"
     build-packages:
       - git
