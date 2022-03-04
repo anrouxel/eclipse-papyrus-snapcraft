@@ -31,7 +31,6 @@ parts:
     plugin: maven
     source: https://git.eclipse.org/r/papyrus/org.eclipse.papyrus.git
     source-type: git
-    source-subdir: releng/rcp/
     maven-options:
       [-Dpapyrus.repo.main=https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2021-09/5.2.0/main/, clean, verify]
     maven-openjdk-version: '11'
@@ -39,6 +38,7 @@ parts:
       snapcraftctl pull
       git checkout 5.2.0 -b latest
       snapcraftctl set-version "$(git describe --tags | sed 's/v//' | sed "s/-g/%/"  | cut -d "%" -f1)"
+      cd releng/rcp/
     build-packages:
       - git
       - sed
