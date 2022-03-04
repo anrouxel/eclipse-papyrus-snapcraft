@@ -43,7 +43,6 @@ parts:
       - sed
       - maven
     stage-packages:
-      - libffi7
       - libfreetype6
       - libpng16-16
       - libgdk-pixbuf2.0-0
