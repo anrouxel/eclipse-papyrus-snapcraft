@@ -38,6 +38,7 @@ parts:
       snapcraftctl pull
       git checkout 5.2.0 -b latest
       snapcraftctl set-version "$(git describe --tags | sed 's/v//' | sed "s/-g/%/"  | cut -d "%" -f1)"
+      tree $SNAPCRAFT_PART_BUILD/
     build-packages:
       - git
       - sed
