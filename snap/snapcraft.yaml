@@ -1,0 +1,56 @@
+name: eclipse-papyrus-snapcraft
+license: GPL-3.0
+summary: Logisim is a digital circuit simulator
+description: |
+  Github (compilation) : https://github.com/anrouxel/logisim-evolution-snapcraft
+base: core20
+grade: stable
+confinement: strict
+
+adopt-info: eclipse-papyrus-snapcraft
+
+architectures:
+  - build-on: amd64
+
+apps:
+  eclipse-papyrus-snapcraft:
+    extensions: [gnome-3-38]
+    command: Papyrus/papyrus
+    plugs:
+      - gsettings
+      - opengl
+      - home
+      - desktop
+      - desktop-legacy
+      - wayland
+      - x11
+      - unity7
+
+parts:
+  eclipse-papyrus-snapcraft:
+    plugin: nil
+    source: https://git.eclipse.org/r/papyrus/org.eclipse.papyrus.git
+    source-type: git
+    override-pull: |
+      snapcraftctl pull
+      git checkout 5.2.0 -b latest
+      snapcraftctl set-version "$(git describe --tags | sed 's/v//' | sed "s/-g/%/"  | cut -d "%" -f1)"
+    override-build: |
+      mvn -f releng/rcp/pom.xml -Dpapyrus.repo.main=https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2021-09/5.2.0/main/ clean verify
+      tar -xf "${SNAPCRAFT_PART_BUILD}/releng/rcp/org.eclipse.papyrus.rcp.product/target/products/org.eclipse.papyrus.rcp.product-linux.gtk.x86_64.tar.gz" -C "${SNAPCRAFT_PART_INSTALL}"
+    build-packages:
+      - git
+      - sed
+      - maven
+      - default-jdk
+    stage-packages:
+      - default-jre
+      - libffi7
+      - libfreetype6
+      - libpng16-16
+      - libgdk-pixbuf2.0-0
+      - libsecret-1-0
+      - libasound2
+      - libxi6
+      - libxrender1
+      - libxtst6
