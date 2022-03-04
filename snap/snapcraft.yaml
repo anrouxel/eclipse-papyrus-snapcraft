@@ -15,7 +15,7 @@ architectures:
 apps:
   eclipse-papyrus-snapcraft:
     extensions: [gnome-3-38]
-    command: $SNAP/Papyrus/papyrus
+    command: Papyrus/papyrus
     plugs:
       - gsettings
       - opengl
