@@ -38,6 +38,8 @@ parts:
       snapcraftctl pull
       git checkout 5.2.0 -b latest
       snapcraftctl set-version "$(git describe --tags | sed 's/v//' | sed "s/-g/%/"  | cut -d "%" -f1)"
+    override-build: |
+      snapcraftctl build
       cd releng/rcp/
     build-packages:
       - git
