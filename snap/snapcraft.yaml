@@ -46,7 +46,7 @@ parts:
       proxies=""
       if [ -n "${http_proxy:-}" ]; then
           getproxy "$http_proxy"
-          proxies="-Dhttp.proxyHost=$host -Dhttp.proxyPort=$port"
+          proxies="-DproxySet=true -Dhttp.proxyHost=$host -Dhttp.proxyPort=$port"
       fi
       if [ -n "${https_proxy:-}" ]; then
           getproxy "$https_proxy"
