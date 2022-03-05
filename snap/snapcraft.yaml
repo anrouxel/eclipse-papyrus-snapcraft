@@ -32,7 +32,7 @@ parts:
     source: https://git.eclipse.org/r/papyrus/org.eclipse.papyrus.git
     source-type: git
     maven-options:
-      [-Dpapyrus.repo.main=https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2021-09/5.2.0/main/]
+      [-f releng/rcp/pom.xml, -Dpapyrus.repo.main=https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2021-09/5.2.0/main/]
     maven-openjdk-version: '11'
     override-pull: |
       snapcraftctl pull
