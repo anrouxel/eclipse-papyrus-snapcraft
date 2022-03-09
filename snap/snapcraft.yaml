@@ -53,7 +53,7 @@ parts:
       fi
       # Builds Maven
       export MAVEN_OPTS="$http $https"
-      mvn -f $SNAPCRAFT_PART_BUILD/releng/rcp/pom.xml -Dpapyrus.repo.main=https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2021-09/5.2.0/main/ -Dmaven.repo.local=$SNAPCRAFT_PART_BUILD/Papyrus-Master-RCP-Releases/.repository clean verify
+      mvn -f $SNAPCRAFT_PART_BUILD/releng/rcp/pom.xml -Dpapyrus.repo.main=https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2021-09/5.2.0/main/ clean verify
       tar -xf "${SNAPCRAFT_PART_BUILD}/releng/rcp/org.eclipse.papyrus.rcp.product/target/products/org.eclipse.papyrus.rcp.product-linux.gtk.x86_64.tar.gz" -C "${SNAPCRAFT_PART_INSTALL}"
     build-packages:
       - git
