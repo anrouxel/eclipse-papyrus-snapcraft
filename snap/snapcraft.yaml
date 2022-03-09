@@ -33,7 +33,7 @@ parts:
     source-type: git
     override-pull: |
       snapcraftctl pull
-      git checkout 5.2.0 -b latest
+      git checkout "$(git describe --tags `git rev-list --tags --max-count=1`)" -b latest
       snapcraftctl set-version "$(git describe --tags | sed 's/v//' | sed "s/-g/%/"  | cut -d "%" -f1)"
     override-build: |
       # Gets the host and port from a proxy URL
