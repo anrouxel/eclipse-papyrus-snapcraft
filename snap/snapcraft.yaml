@@ -36,7 +36,24 @@ parts:
       git checkout 5.2.0 -b latest
       snapcraftctl set-version "$(git describe --tags | sed 's/v//' | sed "s/-g/%/"  | cut -d "%" -f1)"
     override-build: |
-      mvn -f releng/rcp/pom.xml -Dpapyrus.repo.main=https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2021-09/5.2.0/main/ clean verify
+      # Gets the host and port from a proxy URL
+      #   $1 = the proxy URL, such as "http://10.10.10.1:8222/"
+      getproxy () {
+          host=$(echo "$1" | sed -E 's|https?://([^:/]*):?[0-9]*/?|\1|')
+          port=$(echo "$1" | sed -E 's|https?://[^:/]*:?([0-9]*)/?|\1|')
+      }
+      # Sets Java networking properties when using a proxy server
+      if [ -n "${http_proxy:-}" ]; then
+          getproxy "$http_proxy"
+          http="-Dhttp.proxyHost=$host -Dhttp.proxyPort=$port"
+      fi
+      if [ -n "${https_proxy:-}" ]; then
+          getproxy "$https_proxy"
+          https="-Dhttps.proxyHost=$host -Dhttps.proxyPort=$port"
+      fi
+      # Builds Maven
+      export MAVEN_OPTS="$http $https"
+      mvn -f $SNAPCRAFT_PART_BUILD/releng/rcp/pom.xml -Dpapyrus.repo.main=https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2021-09/5.2.0/main/ clean verify
       tar -xf "${SNAPCRAFT_PART_BUILD}/releng/rcp/org.eclipse.papyrus.rcp.product/target/products/org.eclipse.papyrus.rcp.product-linux.gtk.x86_64.tar.gz" -C "${SNAPCRAFT_PART_INSTALL}"
     build-packages:
       - git
