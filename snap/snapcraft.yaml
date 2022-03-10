@@ -34,7 +34,7 @@ parts:
     override-pull: |
       snapcraftctl pull
     override-build: |
-      git checkout "$(git describe --tags `git rev-list --tags --max-count=1`)" -b latest
+      git checkout "5.2.0" -b latest
       snapcraftctl set-version "$(git describe --tags | sed 's/v//' | sed "s/-g/%/"  | cut -d "%" -f1)"
       # Gets the host and port from a proxy URL
       #   $1 = the proxy URL, such as "http://10.10.10.1:8222/"
@@ -53,7 +53,7 @@ parts:
       fi
       # Builds Maven
       export MAVEN_OPTS="$http $https"
-      mvn -f $SNAPCRAFT_PART_BUILD/releng/rcp/pom.xml -Dpapyrus.repo.main=https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2021-12/6.0.0/main/ -Dmaven.repo.local=$SNAPCRAFT_PART_BUILD/.repository clean verify
+      mvn -f $SNAPCRAFT_PART_BUILD/releng/rcp/pom.xml clean verify
       tar -xf "${SNAPCRAFT_PART_BUILD}/releng/rcp/org.eclipse.papyrus.rcp.product/target/products/org.eclipse.papyrus.rcp.product-linux.gtk.x86_64.tar.gz" -C "${SNAPCRAFT_PART_INSTALL}"
     build-packages:
       - git
