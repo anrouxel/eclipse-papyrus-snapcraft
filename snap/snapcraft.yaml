@@ -45,18 +45,19 @@ parts:
       # Sets Java networking properties when using a proxy server
       if [ -n "${http_proxy:-}" ]; then
           getproxy "$http_proxy"
-          http="-Dhttp.proxyHost=$host -Dhttp.proxyPort=$port"
+          http="<proxy><active>true</active>\n<protocol>http</protocol>\n<host>$host</host>\n<port>$port</port>\n</proxy>"
       fi
       if [ -n "${https_proxy:-}" ]; then
           getproxy "$https_proxy"
-          https="-Dhttps.proxyHost=$host -Dhttps.proxyPort=$port"
+          https="<proxy><active>true</active>\n<protocol>http</protocol>\n<host>$host</host>\n<port>$port</port>\n</proxy>"
       fi
       # Builds Maven
-      export MAVEN_OPTS="$http $https"
-      mvn -version
       cat /usr/share/maven/conf/settings.xml
-      find / -name "settings.xml"
-      cat /etc/maven/settings.xml
+      CONTENT="$http\n$https"
+      C=$(echo $CONTENT | sed 's/\//\\\//g')
+      sed "/<\/proxies>/ s/.*/${C}\n&/" /usr/share/maven/conf/settings.xml
+      cat /usr/share/maven/conf/settings.xml
+      mvn -version
       mvn -f $SNAPCRAFT_PART_BUILD/releng/rcp/pom.xml -Dpapyrus.repo.main=https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2021-12/6.0.0/main/ clean verify
       tar -xf "${SNAPCRAFT_PART_BUILD}/releng/rcp/org.eclipse.papyrus.rcp.product/target/products/org.eclipse.papyrus.rcp.product-linux.gtk.x86_64.tar.gz" -C "${SNAPCRAFT_PART_INSTALL}"
     build-packages:
