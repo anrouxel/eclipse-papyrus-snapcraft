@@ -55,7 +55,7 @@ parts:
       cat /usr/share/maven/conf/settings.xml
       CONTENT="$http\n$https"
       C=$(echo $CONTENT | sed 's/\//\\\//g')
-      sed "/<\/proxies>/ s/.*/${C}\n&/" /usr/share/maven/conf/settings.xml > /usr/share/maven/conf/settings.xml
+      sed "/<\/proxies>/ s/.*/${C}\n&/" /usr/share/maven/conf/settings.xml < /usr/share/maven/conf/settings.xml
       cat /usr/share/maven/conf/settings.xml
       mvn -version
       mvn -f $SNAPCRAFT_PART_BUILD/releng/rcp/pom.xml -Dpapyrus.repo.main=https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2021-12/6.0.0/main/ clean verify
