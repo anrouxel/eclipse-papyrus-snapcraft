@@ -52,7 +52,6 @@ parts:
           https="<proxy>\n<id>proxy-https</id>\n<active>true</active>\n<protocol>https</protocol>\n<host>www-yourproxy.host.com</host>\n<port>80</port>\n<nonProxyHosts>localhost|127.0.0.1</nonProxyHosts>\n</proxy>"
       fi
       # Builds Maven
-      cat /usr/share/maven/conf/settings.xml
       CONTENT="$http\n$https"
       echo "<settings>\n<proxies>\n$CONTENT\n</proxies>\n</settings>" > settings.xml
       mvn -version
