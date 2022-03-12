@@ -45,15 +45,15 @@ parts:
       # Sets Java networking properties when using a proxy server
       if [ -n "${http_proxy:-}" ]; then
           getproxy "$http_proxy"
-          http="<proxy>\n<id>proxy-http</id>\n<active>true</active>\n<protocol>http</protocol>\n<host>www-yourproxy.host.com</host>\n<port>80</port>\n<nonProxyHosts>localhost|127.0.0.1</nonProxyHosts>\n</proxy>"
+          http="<proxy><id>proxy-http</id><active>true</active><protocol>http</protocol><host>$host</host><port>$port</port><nonProxyHosts>localhost|127.0.0.1</nonProxyHosts></proxy>"
       fi
       if [ -n "${https_proxy:-}" ]; then
           getproxy "$https_proxy"
-          https="<proxy>\n<id>proxy-https</id>\n<active>true</active>\n<protocol>https</protocol>\n<host>www-yourproxy.host.com</host>\n<port>80</port>\n<nonProxyHosts>localhost|127.0.0.1</nonProxyHosts>\n</proxy>"
+          https="<proxy><id>proxy-https</id><active>true</active><protocol>https</protocol><host>$host</host><port>$port</port><nonProxyHosts>localhost|127.0.0.1</nonProxyHosts></proxy>"
       fi
       # Builds Maven
-      CONTENT="$http\n$https"
-      echo "<settings>\n<proxies>\n$CONTENT\n</proxies>\n</settings>" > settings.xml
+      CONTENT="$http$https"
+      echo "<settings><proxies>$CONTENT</proxies></settings>" > settings.xml
       mvn -version
       mvn -s $SNAPCRAFT_PART_BUILD/settings.xml -f $SNAPCRAFT_PART_BUILD/releng/rcp/pom.xml -Dpapyrus.repo.main=https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2021-12/6.0.0/main/ clean verify
       tar -xf "${SNAPCRAFT_PART_BUILD}/releng/rcp/org.eclipse.papyrus.rcp.product/target/products/org.eclipse.papyrus.rcp.product-linux.gtk.x86_64.tar.gz" -C "${SNAPCRAFT_PART_INSTALL}"
