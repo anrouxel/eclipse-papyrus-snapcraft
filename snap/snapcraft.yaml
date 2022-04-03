@@ -27,43 +27,89 @@ apps:
       - unity7
 
 parts:
+  maven:
+    plugin: nil
+    source: https://github.com/apache/maven.git
+    source-type: git
+    override-pull: |
+      snapcraftctl pull
+      git checkout "$(git describe --tags `git rev-list --tags --max-count=1`)" -b latest
+    override-build: |
+      # Gets the host and port from a proxy URL
+      #   $1 = the proxy URL, such as "http://10.10.10.1:8222/"
+      getproxy () {
+          # Parses URL with Bash or Dash shell parameter expansion
+          tail=${1#http*://}
+          head=${tail%%/*}
+          host=${head%:*}
+          port=${head##*:}
+      }
+      # Sets Java networking properties when using a proxy server
+      proxies=""
+      if [ -n "${http_proxy:-}" ]; then
+          getproxy "$http_proxy"
+          proxies="-Dhttp.proxyHost=$host -Dhttp.proxyPort=$port"
+      fi
+      if [ -n "${https_proxy:-}" ]; then
+          getproxy "$https_proxy"
+          proxies="$proxies -Dhttps.proxyHost=$host -Dhttps.proxyPort=$port"
+      fi
+      # Builds Maven
+      export MAVEN_OPTS="$proxies"
+      export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+      mvn -DdistributionTargetDir="/usr/share/apache-maven" \
+        --batch-mode --strict-checksums --quiet --show-version \
+        package
+    build-packages:
+      - git
+      - sed
+      - maven
+      - openjdk-11-jdk
+  
   eclipse-papyrus-snapcraft:
+    after:
+      - maven
     plugin: nil
     source: https://git.eclipse.org/r/papyrus/org.eclipse.papyrus.git
     source-type: git
     override-pull: |
       snapcraftctl pull
-    override-build: |
-      git checkout "5.2.0" -b latest
       snapcraftctl set-version "$(git describe --tags | sed 's/v//' | sed "s/-g/%/"  | cut -d "%" -f1)"
+    override-build: |
+      cd Logisim-Fork/
+      ln -s /usr/share/apache-maven /usr/share/maven
       # Gets the host and port from a proxy URL
       #   $1 = the proxy URL, such as "http://10.10.10.1:8222/"
       getproxy () {
-          host=$(echo "$1" | sed -E 's|https?://([^:/]*):?[0-9]*/?|\1|')
-          port=$(echo "$1" | sed -E 's|https?://[^:/]*:?([0-9]*)/?|\1|')
+          # Parses URL with Bash or Dash shell parameter expansion
+          tail=${1#http*://}
+          head=${tail%%/*}
+          host=${head%:*}
+          port=${head##*:}
       }
       # Sets Java networking properties when using a proxy server
+      proxies=""
       if [ -n "${http_proxy:-}" ]; then
           getproxy "$http_proxy"
-          http="<proxy><id>proxy-http</id><active>true</active><protocol>http</protocol><host>$host</host><port>$port</port><nonProxyHosts>localhost|127.0.0.1</nonProxyHosts></proxy>"
+          proxies="-Dhttp.proxyHost=$host -Dhttp.proxyPort=$port"
       fi
       if [ -n "${https_proxy:-}" ]; then
           getproxy "$https_proxy"
-          https="<proxy><id>proxy-https</id><active>true</active><protocol>https</protocol><host>$host</host><port>$port</port><nonProxyHosts>localhost|127.0.0.1</nonProxyHosts></proxy>"
+          proxies="$proxies -Dhttps.proxyHost=$host -Dhttps.proxyPort=$port"
       fi
       # Builds Maven
-      CONTENT="$http$https"
-      echo "<settings><proxies>$CONTENT</proxies></settings>" > settings.xml
-      mvn -version
-      mvn -s $SNAPCRAFT_PART_BUILD/settings.xml -f $SNAPCRAFT_PART_BUILD/releng/rcp/pom.xml -Dpapyrus.repo.main=https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2021-12/6.0.0/main/ clean verify
-      tar -xf "${SNAPCRAFT_PART_BUILD}/releng/rcp/org.eclipse.papyrus.rcp.product/target/products/org.eclipse.papyrus.rcp.product-linux.gtk.x86_64.tar.gz" -C "${SNAPCRAFT_PART_INSTALL}"
+      export MAVEN_OPTS="$proxies"
+      export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+      export M2_HOME=/usr/share/apache-maven
+      export MAVEN_HOME=/usr/share/apache-maven
+      export PATH=${M2_HOME}/bin:${PATH}
+      mvn --show-version -f releng/rcp/pom.xml -Dpapyrus.repo.main=https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2021-12/6.0.0/main/ clean verify
     build-packages:
       - git
       - sed
-      - maven
-      - default-jdk
+      - openjdk-17-jdk
     stage-packages:
-      - default-jre
+      - openjdk-17-jre
       - libffi7
       - libfreetype6
       - libpng16-16
