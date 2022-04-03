@@ -76,7 +76,6 @@ parts:
       snapcraftctl pull
       snapcraftctl set-version "$(git describe --tags | sed 's/v//' | sed "s/-g/%/"  | cut -d "%" -f1)"
     override-build: |
-      cd Logisim-Fork/
       ln -s /usr/share/apache-maven /usr/share/maven
       # Gets the host and port from a proxy URL
       #   $1 = the proxy URL, such as "http://10.10.10.1:8222/"
