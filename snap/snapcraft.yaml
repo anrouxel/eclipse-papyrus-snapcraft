@@ -70,7 +70,7 @@ parts:
     after:
       - maven
     plugin: nil
-    source: https://git.eclipse.org/r/papyrus/org.eclipse.papyrus.git
+    source: https://git.eclipse.org/c/www.eclipse.org/papyrus.git
     source-type: git
     override-pull: |
       snapcraftctl pull
