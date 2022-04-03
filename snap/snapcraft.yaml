@@ -102,7 +102,7 @@ parts:
       export M2_HOME=/usr/share/apache-maven
       export MAVEN_HOME=/usr/share/apache-maven
       export PATH=${M2_HOME}/bin:${PATH}
-      mvn --show-version -f releng/rcp/pom.xml clean verify
+      mvn --show-version -f releng/rcp/pom.xml -DSIGN=true clean verify
     build-packages:
       - git
       - sed
