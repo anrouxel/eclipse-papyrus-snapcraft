@@ -106,9 +106,9 @@ parts:
     build-packages:
       - git
       - sed
-      - openjdk-17-jdk
+      - openjdk-16-jdk
     stage-packages:
-      - openjdk-17-jre
+      - openjdk-16-jre
       - libffi7
       - libfreetype6
       - libpng16-16
