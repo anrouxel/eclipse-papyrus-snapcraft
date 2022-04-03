@@ -97,7 +97,7 @@ parts:
           proxies="$proxies -Dhttps.proxyHost=$host -Dhttps.proxyPort=$port"
       fi
       # Builds Maven
-      export MAVEN_OPTS="$proxies"
+      export MAVEN_OPTS="$proxies -Xmx2048m"
       export JAVA_HOME=/usr/lib/jvm/java-16-openjdk-amd64
       export M2_HOME=/usr/share/apache-maven
       export MAVEN_HOME=/usr/share/apache-maven
