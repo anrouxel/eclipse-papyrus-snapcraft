@@ -97,11 +97,11 @@ parts:
           proxies="$proxies -Dhttps.proxyHost=$host -Dhttps.proxyPort=$port"
       fi
       # Builds Maven
-      export MAVEN_OPTS="$proxies -Xmx2048m"
       export JAVA_HOME=/usr/lib/jvm/java-16-openjdk-amd64
       export M2_HOME=/usr/share/apache-maven
       export MAVEN_HOME=/usr/share/apache-maven
       export PATH=${M2_HOME}/bin:${PATH}
+      export MAVEN_OPTS="$proxies -Xmx2048m"
       mvn --show-version -f releng/rcp/pom.xml -DSIGN=true -Dpapyrus.repo.main=https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2022-03/6.1.0/main/ clean verify
     build-packages:
       - git
