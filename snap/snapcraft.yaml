@@ -102,7 +102,7 @@ parts:
       export M2_HOME=/usr/share/apache-maven
       export MAVEN_HOME=/usr/share/apache-maven
       export PATH=${M2_HOME}/bin:${PATH}
-      mvn --show-version -f releng/rcp/pom.xml -DSIGN=true -Dpapyrus.repo.main=https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2022-03/6.1.0/main/ clean verify
+      mvn --show-version -X -f releng/rcp/pom.xml -DSIGN=true -Dpapyrus.repo.main=https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2022-03/6.1.0/main/ clean verify
     build-packages:
       - git
       - sed
