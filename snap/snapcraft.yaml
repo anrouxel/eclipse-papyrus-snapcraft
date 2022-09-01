@@ -3,7 +3,7 @@ license: GPL-3.0
 summary: Logisim is a digital circuit simulator
 description: |
   Github (compilation) : https://github.com/anrouxel/logisim-evolution-snapcraft
-base: core20
+base: core22
 grade: stable
 confinement: strict
 
@@ -11,10 +11,11 @@ adopt-info: eclipse-papyrus-snapcraft
 
 architectures:
   - build-on: amd64
+    build-for: amd64
 
 apps:
   eclipse-papyrus-snapcraft:
-    extensions: [gnome-3-38]
+    extensions: [gnome]
     command: Papyrus/papyrus
     plugs:
       - gsettings
@@ -32,7 +33,7 @@ parts:
     source: https://github.com/apache/maven.git
     source-type: git
     override-pull: |
-      snapcraftctl pull
+      craftctl default
       git checkout "$(git describe --tags `git rev-list --tags --max-count=1`)" -b latest
     override-build: |
       # Gets the host and port from a proxy URL
@@ -56,7 +57,8 @@ parts:
       fi
       # Builds Maven
       export MAVEN_OPTS="$proxies"
-      export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+      export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-$CRAFT_TARGET_ARCH
+      export PATH=${JAVA_HOME}/bin:${PATH}
       mvn -DdistributionTargetDir="/usr/share/apache-maven" \
         --batch-mode --strict-checksums --quiet --show-version \
         package
@@ -73,8 +75,8 @@ parts:
     source: https://git.eclipse.org/r/papyrus/org.eclipse.papyrus.git
     source-type: git
     override-pull: |
-      snapcraftctl pull
-      snapcraftctl set-version "$(git describe --tags | sed 's/v//' | sed "s/-g/%/"  | cut -d "%" -f1)"
+      craftctl default
+      craftctl set version="$(git describe --tags | sed 's/v//' | sed "s/-g/%/"  | cut -d "%" -f1)"
     override-build: |
       ln -s /usr/share/apache-maven /usr/share/maven
       # Gets the host and port from a proxy URL
@@ -97,18 +99,23 @@ parts:
           proxies="$proxies -Dhttps.proxyHost=$host -Dhttps.proxyPort=$port"
       fi
       # Builds Maven
-      export JAVA_HOME=/usr/lib/jvm/java-16-openjdk-amd64
+      export MAVEN_OPTS="$proxies -Xmx2048m"
+      export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-$CRAFT_TARGET_ARCH
       export M2_HOME=/usr/share/apache-maven
       export MAVEN_HOME=/usr/share/apache-maven
-      export PATH=${M2_HOME}/bin:${PATH}
-      export MAVEN_OPTS="$proxies -Xmx2048m"
+      export PATH=${JAVA_HOME}/bin:${M2_HOME}/bin:${PATH}
       mvn --show-version -f releng/rcp/pom.xml -DSIGN=true -Dpapyrus.repo.main=https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2022-03/6.1.0/main/ clean verify
     build-packages:
       - git
       - sed
-      - openjdk-16-jdk
+      - openjdk-17-jdk
+      - libfontconfig1-dev
     stage-packages:
-      - openjdk-16-jre
+      - openjdk-17-jre
+      - fonts-freefont-ttf
+      - fonts-arphic-uming
+      - fontconfig-config
+      - libgtk-3-0
       - libffi7
       - libfreetype6
       - libpng16-16
